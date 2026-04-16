@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareMii</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-container">
+                <h1>ShareMii</h1>
+            </div>
+            <p>Exchange Miis for Tomodachi Life: Living the Dream!</p>
+        </header>
+
+        <main class="main-layout">
+            <div class="left-col">
+                <section class="upload-section glass-panel" id="uploadPanel">
+                    <h2>SELECT YOUR SAVE FOLDER</h2>
+                    <p>Drag and drop the zipped folder containing Mii.sav & Player.sav here!</p>
+                    <div class="upload-buttons">
+                        <label for="saveFolder" class="btn primary-btn">
+                            Browse Folder
+                        </label>
+                        <input type="file" id="saveFolder" webkitdirectory directory multiple hidden>
+
+                        <label for="saveZip" class="btn secondary-btn">
+                            Upload .ZIP
+                        </label>
+                        <input type="file" id="saveZip" accept=".zip" hidden>
+                    </div>
+                    <div id="errorMsg" class="error-msg hidden"></div>
+                </section>
+
+                <section class="editor-section glass-panel hidden" id="editorPanel">
+                    <div class="tab-content">
+                        <div id="miis" class="tab-pane active">
+                            <ul class="item-list" id="miiList"></ul>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn success-btn" id="saveBtn">EXPORT AS .ZIP</button>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="right-col side-panel glass-panel">
+                <div class="side-header">
+                    <h2>About ShareMii</h2>
+                    <a href="https://github.com/Azkun/ShareMii" target="_blank" class="github-btn"
+                        title="View on GitHub">
+                        <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32"
+                            data-view-component="true">
+                            <path fill="currentColor" fill-rule="evenodd"
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="side-content">
+                    <p><strong>ShareMii</strong> operates entirely in your browser. Drop your save files and modify your
+                        Miis directly!</p>
+                    <p>To use this tool:</p>
+                    <ul>
+                        <li>Dump your save using <strong>Checkpoint</strong> or <strong>JKSV</strong> on your Switch.
+                        </li>
+                        <li><strong>Back up</strong> the dumped folder before doing anything.</li>
+                        <li>Upload the save folder or its <kbd>.zip</kbd> here.</li>
+                        <li>Browse your Miis, and <strong>Export</strong> any Mii as a <kbd>.ltd</kbd> file.</li>
+                        <li><strong>Import</strong> a <kbd>.ltd</kbd> file to replace a Mii's appearance and
+                            personality.</li>
+                        <li>Click <strong>Export as .ZIP</strong>, then restore the modified save with Checkpoint!</li>
+                    </ul>
+                    <p><strong>Tips:</strong></p>
+                    <ul>
+                        <li>Modifying <strong>Draft Mii</strong> will only change its appearance.</li>
+                        <li>Modifying an <strong>existing mii</strong> will change its appearance and personality, but
+                            not its items or relationships.</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <footer>
+            <p>Runs entirely in your browser.</p>
+        </footer>
+    </div>
+
+    <input type="file" id="importFile" accept=".ltd" hidden>
+    <div id="toastContainer"></div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
