@@ -19,6 +19,12 @@ https://sharemii.qwkuns.me/
 - When you edit the **Draft Mii**, the only retained information will be its appearance.
 - When you edit an **already existing Mii**, it will edit its name, properties, appearance, without editing its relationship, clothes or items.
 
+## To-do list
+
+- Add support for an API that would allow users to search, share, and upload Miis for everyone, with "Author", "Name", "Description", "Image" and "File" (.ltd) parameters.
+- Add better Mii settings to change specific things about each Miis, like their personalities etc...
+- Add support for UGCs like items, food, even buildings to the tool.
+
 ## Contributing
 
 Contributions are welcome. I'd love a proper video preview but I don't have time to do it cleanly, so if anyone wants to add that (or ugc support, or anything else), go for it. Just please follow [conventional commits](https://www.conventionalcommits.org/) when you push.
