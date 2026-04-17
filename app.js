@@ -353,6 +353,59 @@ importFileInput.addEventListener('change', async (e) => {
                 miisav.set(result, persOffsetSX);
             }
 
+            // pull canvas + ugctex back out of the .ltd and register the facepaint with player.sav
+            const fpIndexOffset = offsetLocator(miiSavBuffer, Constants.Mii.offsets.miiFpIndex);
+            const fp1 = offsetLocator(playerSavBuffer, Constants.Mii.offsets.fpPrice);
+            const fp2 = offsetLocator(playerSavBuffer, Constants.Mii.offsets.fpTex);
+            const fp3 = offsetLocator(playerSavBuffer, Constants.Mii.offsets.fpState);
+            const fp4 = offsetLocator(playerSavBuffer, Constants.Mii.offsets.fpUnk);
+            const fp5 = offsetLocator(playerSavBuffer, Constants.Mii.offsets.fpHash);
+
+            if (ltd[0] >= 3 && ltd[1] === 1) {
+                // find the A3/A4 markers that separate the fixed blocks from the texture payloads
+                let canvasStart = -1, ugctexStart = -1;
+                for (let i = 427; i < ltd.length - 4; i++) {
+                    if (ltd[i] === 0xA3 && ltd[i + 1] === 0xA3 && ltd[i + 2] === 0xA3 && ltd[i + 3] === 0xA3) canvasStart = i + 4;
+                    if (ltd[i] === 0xA4 && ltd[i + 1] === 0xA4 && ltd[i + 2] === 0xA4 && ltd[i + 3] === 0xA4) { ugctexStart = i + 4; break; }
+                }
+
+                // reuse existing fp slot or claim the lowest free one
+                let fpId = miisav[fpIndexOffset + 4 * currentImportSlot];
+                if (fpId === 255) {
+                    const usedIds = new Set();
+                    for (let s = 0; s < 69; s++) { const v = miisav[fpIndexOffset + 4 * s]; if (v !== 255) usedIds.add(v); }
+                    for (let id = 0; id < 70; id++) { if (!usedIds.has(id)) { fpId = id; break; } }
+                }
+
+                // write miiFpIndex + the 5 player.sav registration values the game expects
+                miisav.set(new Uint8Array([fpId, 0, 0, 0]), fpIndexOffset + 4 * currentImportSlot);
+                playersav.set(new Uint8Array([0xF4, 0x01, 0x00, 0x00]), fp1 + 4 * fpId);
+                playersav.set(new Uint8Array([0x41, 0x49, 0x93, 0x56]), fp2 + 4 * fpId);
+                playersav.set(new Uint8Array([0xF4, 0xAD, 0x7F, 0x1D]), fp3 + 4 * fpId);
+                playersav.set(new Uint8Array([0x00, 0x80, 0x00, 0x00]), fp4 + 4 * fpId);
+                playersav.set(new Uint8Array([fpId, 0x00, 0x08, 0x00]), fp5 + 4 * fpId);
+
+                // mark byte 47 of the raw mii data so the game knows it has a facepaint
+                miisav[miiIndex + 43] = 1;
+
+                let fpStr = fpId < 10 ? "00" + fpId : "0" + fpId;
+                if (canvasStart !== -1 && ugctexStart !== -1) {
+                    ugcFiles.set(`UgcFacePaint${fpStr}.canvas.zs`, ltd.slice(canvasStart, ugctexStart - 4));
+                    ugcFiles.set(`UgcFacePaint${fpStr}.ugctex.zs`, ltd.slice(ugctexStart));
+                }
+            } else if (ltd[0] >= 3 && ltd[1] === 0) {
+                // no facepaint; reset miiFpIndex and clear all 5 player.sav slots
+                const fpId = miisav[fpIndexOffset + 4 * currentImportSlot];
+                if (fpId !== 255) {
+                    miisav.set(new Uint8Array([0xFF, 0xFF, 0xFF, 0xFF]), fpIndexOffset + 4 * currentImportSlot);
+                    playersav.set(new Uint8Array([0x00, 0x00, 0x00, 0x00]), fp1 + 4 * fpId);
+                    playersav.set(new Uint8Array([0x09, 0xDE, 0xEE, 0xB6]), fp2 + 4 * fpId);
+                    playersav.set(new Uint8Array([0xA5, 0x8A, 0xFF, 0xAF]), fp3 + 4 * fpId);
+                    playersav.set(new Uint8Array([0x00, 0x00, 0x00, 0x00]), fp4 + 4 * fpId);
+                    playersav.set(new Uint8Array([0x00, 0x00, 0x00, 0x00]), fp5 + 4 * fpId);
+                }
+            }
+
             toast("slot " + (currentImportSlot + 1) + " imported!");
         }
 
