@@ -14,6 +14,8 @@ https://sharemii.qwkuns.me/
 
 ![Preview](assets/preview.png)
 
+*Currently, `.ltd` files are compatible with the original python version of [ShareMii](https://github.com/Star-F0rce/ShareMii), created by [@Star-F0rce](https://github.com/Star-F0rce). As much as possible, we want to keep them compatible with newer versions of `.ltd` files.*
+
 ## Known issues
 
 - When you edit the **Draft Mii**, the only retained information will be its appearance.
