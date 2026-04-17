@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+django
+requests
+python-multipart
+mysql-connector-python
+Pillow
+colorama

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShareMii API Tester</title>
+</head>
+<body>
+  <h1>ShareMii API Tester</h1>
+
+  <hr>
+  <h2>Upload Mii</h2>
+  <form id="uploadForm">
+    <label>.ltd file: <input type="file" name="file" accept=".ltd" required></label><br><br>
+    <label>Name (optional): <input type="text" name="name"></label><br><br>
+    <label>Author (optional): <input type="text" name="author"></label><br><br>
+    <label>Description (optional): <input type="text" name="description"></label><br><br>
+    <label>Images (optional, max 5): <input type="file" name="images" multiple accept="image/*"></label><br><br>
+    <button type="submit">Upload</button>
+  </form>
+  <pre id="uploadResult"></pre>
+
+  <hr>
+  <h2>Get Mii Metadata</h2>
+  <form id="metaForm">
+    <label>File ID: <input type="text" name="file_id" maxlength="6" placeholder="A7K2Q9"></label>
+    <button type="submit">Fetch</button>
+  </form>
+  <pre id="metaResult"></pre>
+
+  <hr>
+  <h2>Download Mii File</h2>
+  <form id="downloadForm">
+    <label>File ID: <input type="text" name="file_id" maxlength="6" placeholder="A7K2Q9"></label>
+    <button type="submit">Download</button>
+  </form>
+
+  <hr>
+  <h2>View Image</h2>
+  <form id="imageForm">
+    <label>Image name: <input type="text" name="image_name" placeholder="A7K2Q9_1.jpg"></label>
+    <button type="submit">Load</button>
+  </form>
+  <div id="imageResult"></div>
+
+  <script>
+    const BASE = 'http://127.0.0.1:3000';
+
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData();
+      data.append('file', form.file.files[0]);
+      if (form.name.value)        data.append('name',        form.name.value);
+      if (form.author.value)      data.append('author',      form.author.value);
+      if (form.description.value) data.append('description', form.description.value);
+      for (const img of form.images.files) data.append('images', img);
+
+      const res = await fetch(`${BASE}/upload`, { method: 'POST', body: data });
+      const json = await res.json();
+      document.getElementById('uploadResult').textContent = JSON.stringify(json, null, 2);
+    });
+
+    document.getElementById('metaForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = e.target.file_id.value.trim();
+      const res = await fetch(`${BASE}/miis/${id}`);
+      const json = await res.json();
+      document.getElementById('metaResult').textContent = JSON.stringify(json, null, 2);
+    });
+
+    document.getElementById('downloadForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = e.target.file_id.value.trim();
+      window.location.href = `${BASE}/files/${id}`;
+    });
+
+    document.getElementById('imageForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = e.target.image_name.value.trim();
+      const img = document.createElement('img');
+      img.src = `${BASE}/images/${name}`;
+      img.alt = name;
+      const div = document.getElementById('imageResult');
+      div.innerHTML = '';
+      div.appendChild(img);
+    });
+  </script>
+</body>
+</html>
