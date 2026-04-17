@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS miis (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    unique_id VARCHAR(16) NOT NULL UNIQUE,
+    name VARCHAR(255),
+    author VARCHAR(255),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS mii_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    mii_unique_id VARCHAR(16) NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (mii_unique_id) REFERENCES miis(unique_id) ON DELETE CASCADE
+);

@@ -12,7 +12,7 @@ Dump your save data using **Checkpoint** or **JKSV** on your Switch, (or your ga
 
 https://sharemii.qwkuns.me/
 
-![Preview](assets/preview.png)
+![Preview](src/webui/static/webui/assets/preview.png)
 
 *Currently, `.ltd` files are compatible with the original python version of [ShareMii](https://github.com/Star-F0rce/ShareMii), created by [@Star-F0rce](https://github.com/Star-F0rce). As much as possible, we want to keep them compatible with newer versions of `.ltd` files.*
 
